@@ -60,7 +60,7 @@ pipeline {
         
         stage('Qualitygate check') {
             steps {
-                timeout(time: 1, unit: 'HOURS') {
+                timeout(5) {
                     waitForQualityGate abortPipeline: false
                 }
             }
@@ -85,7 +85,7 @@ pipeline {
             steps {
                 script {
                     withDockerRegistry(credentialsId: 'docker-token') {
-                        sh "docker build -d ${IMAGE_NAME}:${TAG} ."    
+                        sh "docker build -t ${IMAGE_NAME}:${TAG} ."    
                     }
                 }
             }
@@ -100,7 +100,7 @@ pipeline {
         stage('Docker Push Image') {
             steps {
                 script {
-                    withDockerRegistry(credentialsId: 'docker-cred') {
+                    withDockerRegistry(credentialsId: 'docker-token') {
                         sh "docker push ${IMAGE_NAME}:${TAG}"
                     }
                 }
